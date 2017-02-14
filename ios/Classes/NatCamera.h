@@ -6,14 +6,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
-
-@interface NatCamera : NatManager<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface NatCamera : NSObject<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+typedef void (^NatCallback)(id error, id result);
 
 + (NatCamera *)singletonManger;
-
 - (void)captureImage:(NSDictionary *)params :(NatCallback)callback;
-
 - (void)captureVideo:(NSDictionary *)params :(NatCallback)callback;
 
 @end

@@ -5,6 +5,7 @@
 //  Copyright © 2017 Nat. All rights reserved.
 //
 
+
 #import "NatCamera.h"
 #import "UIImagePickerController+Expand.h"
 #import <AssetsLibrary/AssetsLibrary.h>
@@ -38,8 +39,13 @@
 - (void)captureImage:(NSDictionary *)params :(NatCallback)callback{
     
     AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-    if (authStatus ==AVAuthorizationStatusRestricted || authStatus == ALAuthorizationStatusDenied)
+    if (authStatus ==AVAuthorizationStatusRestricted || authStatus == ALAuthorizationStatusDenied)  //用户已经明确否认了这一照片数据的应用程序访问
     {
+//         无权限 引导去开启
+//        NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+//        if ([[UIApplication sharedApplication]canOpenURL:url]) {
+//            [[UIApplication sharedApplication]openURL:url];
+//        }
         callback(@{@"error":@{@"msg":@"CAMERA_PERMISSION_DENIED",@"code":@120020}},nil);
         return;
     }
@@ -68,6 +74,8 @@
         {
             
             [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+                
+                //1,保存图片到系统相册
             self.locid = [PHAssetChangeRequest creationRequestForAssetFromImage:orImage].placeholderForCreatedAsset.localIdentifier;
             self.locid = [@"nat://static/image/" stringByAppendingString:self.locid];
                
@@ -94,6 +102,7 @@
     } cancelBlock:^(UIImagePickerController *picker) {
         self.camera = nil;
         [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
+//        callback(@{@"error":@{@"msg":@"CAMERA_CANCEL",@"code":@0}},nil);
     }];
 
 }
@@ -101,8 +110,13 @@
 - (void)captureVideo:(NSDictionary *)params :(NatCallback)callback{
     
     AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-    if (authStatus ==AVAuthorizationStatusRestricted || authStatus == ALAuthorizationStatusDenied)
+    if (authStatus ==AVAuthorizationStatusRestricted || authStatus == ALAuthorizationStatusDenied)  //用户已经明确否认了这一照片数据的应用程序访问
     {
+        //         无权限 引导去开启
+//        NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+//        if ([[UIApplication sharedApplication]canOpenURL:url]) {
+//            [[UIApplication sharedApplication]openURL:url];
+//        }
         callback(@{@"error":@{@"msg":@"CAMERA_PERMISSION_DENIED",@"code":@120020}},nil);
         return;
     }
@@ -193,6 +207,7 @@
     
     return scaledImage;   //返回的就是已经改变的图片
 }
+
 
 - (UIViewController *)getCurrentVC
 {
