@@ -93,7 +93,7 @@ public class HLCameraModule {
             return;
         }
 
-        final long startTime = System.currentTimeMillis();
+        mCaptureVideoStartTime = System.currentTimeMillis();
         mIsTakingVideo = true;
         String fileName = "nat_video_" + new Date().getTime() + ".mov";
         Intent intent = new Intent();
