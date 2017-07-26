@@ -13,10 +13,10 @@ import java.util.HashMap;
 
 /**
  * Created by xuqinchao on 17/1/7.
- *  Copyright (c) 2017 Nat. All rights reserved.
+ *  Copyright (c) 2017 Instapp. All rights reserved.
  */
 
-public class HLCameraModule {
+public class CameraModule {
 
     File finalImageFile = null;
     File videoFile = null;
@@ -26,17 +26,17 @@ public class HLCameraModule {
     long mCaptureVideoStartTime = System.currentTimeMillis();
 
     private Context mContext;
-    private static volatile HLCameraModule instance = null;
+    private static volatile CameraModule instance = null;
 
-    private HLCameraModule(Context context){
+    private CameraModule(Context context){
         mContext = context;
     }
 
-    public static HLCameraModule getInstance(Context context) {
+    public static CameraModule getInstance(Context context) {
         if (instance == null) {
-            synchronized (HLCameraModule.class) {
+            synchronized (CameraModule.class) {
                 if (instance == null) {
-                    instance = new HLCameraModule(context);
+                    instance = new CameraModule(context);
                 }
             }
         }
@@ -44,9 +44,9 @@ public class HLCameraModule {
         return instance;
     }
 
-    public void captureImage(Activity activity, final HLModuleResultListener listener){
+    public void captureImage(Activity activity, final ModuleResultListener listener){
         if (mIsTakingPhoto) {
-            listener.onResult(HLUtil.getError(HLConstant.CAMERA_BUSY, HLConstant.CAMERA_BUSY_CODE));
+            listener.onResult(Util.getError(Constant.CAMERA_BUSY, Constant.CAMERA_BUSY_CODE));
             return;
         }
         mCaptureImgStartTime = System.currentTimeMillis();
@@ -58,19 +58,19 @@ public class HLCameraModule {
         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         try {
-            finalImageFile = HLUtil.getHLFile(fileName);
+            finalImageFile = Util.getFile(fileName);
         } catch (IOException e) {
             e.printStackTrace();
-            listener.onResult(HLUtil.getError(HLConstant.CAMERA_INTERNAL_ERROR, HLConstant.CAMERA_INTERNAL_ERROR_CODE));
+            listener.onResult(Util.getError(Constant.CAMERA_INTERNAL_ERROR, Constant.CAMERA_INTERNAL_ERROR_CODE));
         }
         Uri uri = Uri.fromFile(finalImageFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 
-        activity.startActivityForResult(intent, HLConstant.HL_IMAGE_REQUEST_CODE);
+        activity.startActivityForResult(intent, Constant.IMAGE_REQUEST_CODE);
     }
 
     public Object onCaptureImgActivityResult(int requestCode, int resultCode, Intent data){
-        if (requestCode != HLConstant.HL_IMAGE_REQUEST_CODE) return null;
+        if (requestCode != Constant.IMAGE_REQUEST_CODE) return null;
 
         mIsTakingPhoto = false;
         if (resultCode == Activity.RESULT_OK) {
@@ -81,15 +81,15 @@ public class HLCameraModule {
         } else {
             long endTime = System.currentTimeMillis();
             if (endTime - mCaptureImgStartTime <= 10) {
-                return HLUtil.getError(HLConstant.CAMERA_PERMISSION_DENIED, HLConstant.CAMERA_PERMISSION_DENIED_CODE);
+                return Util.getError(Constant.CAMERA_PERMISSION_DENIED, Constant.CAMERA_PERMISSION_DENIED_CODE);
             }
             return null;
         }
     }
 
-    public void captureVideo(Activity activity, final HLModuleResultListener listener) {
+    public void captureVideo(Activity activity, final ModuleResultListener listener) {
         if (mIsTakingVideo) {
-            listener.onResult(HLUtil.getError(HLConstant.CAMERA_BUSY, HLConstant.CAMERA_BUSY_CODE));
+            listener.onResult(Util.getError(Constant.CAMERA_BUSY, Constant.CAMERA_BUSY_CODE));
             return;
         }
 
@@ -100,17 +100,17 @@ public class HLCameraModule {
         intent.setAction(MediaStore.ACTION_VIDEO_CAPTURE);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         try {
-            videoFile = HLUtil.getHLFile(fileName);
+            videoFile = Util.getFile(fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
         Uri uri = Uri.fromFile(videoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        activity.startActivityForResult(intent, HLConstant.HL_VIDEO_REQUEST_CODE);
+        activity.startActivityForResult(intent, Constant.VIDEO_REQUEST_CODE);
     }
 
     public Object onCaptureVideoActivityResult(int requestCode, int resultCode, Intent data){
-        if (requestCode != HLConstant.HL_VIDEO_REQUEST_CODE) return null;
+        if (requestCode != Constant.VIDEO_REQUEST_CODE) return null;
 
         mIsTakingVideo = false;
         if (resultCode == Activity.RESULT_OK) {
@@ -121,7 +121,7 @@ public class HLCameraModule {
         }else {
             long endTime = System.currentTimeMillis();
             if (endTime - mCaptureVideoStartTime <= 10) {
-                return HLUtil.getError(HLConstant.CAMERA_PERMISSION_DENIED, HLConstant.CAMERA_PERMISSION_DENIED_CODE);
+                return Util.getError(Constant.CAMERA_PERMISSION_DENIED, Constant.CAMERA_PERMISSION_DENIED_CODE);
             }
             return null;
         }
