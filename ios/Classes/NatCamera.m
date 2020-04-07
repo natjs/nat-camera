@@ -11,6 +11,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <Photos/Photos.h>
+#import "HooliURLProtocol.h"
 
 
 #define KOriginalPhotoImagePath   \
@@ -32,6 +33,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         manager = [[self alloc] init];
+        [NSURLProtocol registerClass:[HooliURLProtocol class]];
     });
     return manager;
 }
